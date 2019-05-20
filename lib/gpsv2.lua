@@ -121,7 +121,8 @@ local function parseNmea(s)
         end
     elseif s:match("VTG") then
         kmHour = s:match("VTG,%d*%.*%d*,%w*,%d*%.*%d*,%w*,%d*%.*%d*,%w*,(%d*%.*%d*)")
-        if fixFlag then sys.publish("GPS_MSG_REPORT", 1) else sys.publish("GPS_MSG_NOREPORT", 0) end
+        -- if fixFlag then sys.publish("GPS_MSG_REPORT", 1) else sys.publish("GPS_MSG_NOREPORT", 0) end
+        sys.publish("GPS_MSG_REPORT", fixFlag and 1 or 0)
     end
 end
 
@@ -440,7 +441,7 @@ function getIntLocation()
     return 0, 0
 end
 --- 获取基站定位的经纬度信息dd.dddd
-function getDeglbs()
+function getDeglbs()    
     return lbs_lng or "0.0", lbs_lat or "0.0"
 end
 

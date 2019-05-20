@@ -184,7 +184,7 @@ function mt:asyncSelect(keepAlive, pingreq)
     end
     self.wait = "SOCKET_WAIT"
     sys.publish("SOCKET_SEND", self.id)
-    if not keepAlive or keepAlive == 0 then
+    if keepAlive and keepAlive ~= 0 then
         if type(pingreq) == "function" then
             sys.timerStart(pingreq, keepAlive * 1000)
         else
@@ -417,4 +417,5 @@ end
 function setTcpResendPara(retryCnt, retryMaxTimeout)
     ril.request("AT+TCPUSERPARAM=6," .. (retryCnt or 4) .. ",7200," .. (retryMaxTimeout or 16))
 end
+
 -- setTcpResendPara(1, 16)
