@@ -336,7 +336,7 @@ local function regModbus(key, uid)
     }
     headers["api-key"] = key
     for i = 1, 3 do
-        local code, head, body = httpv2.request("POST", "http://api.heclouds.com/devices", 10000, nil, {title = misc.getImei() .. uid, auth_info = {[sim.getIccid():sub(-10, -1) .. uid] = misc.getImei():sub(-7, -1) .. uid}}, 2, nil, headers)
+        local code, head, body = httpv2.request("POST", "http://api.heclouds.com/devices", 10000, nil, {title = misc.getImei() .. '-' .. uid, auth_info = {[misc.getImei():sub(-10, -1) .. uid] = misc.getMuid():sub(-8, -1)}}, 2, nil, headers)
         if tonumber(code) == 200 and body then
             log.info("OneNET返回的设备ID:", body)
         end
@@ -363,8 +363,8 @@ end
 -- onenet modbus 协议支持
 local function oneNet_modbus(cid, pios, reg, convert, passon, upprot, dwprot, timeout, key, pid, uid, intervalTime, ssl)
     local host = regModbus(key, uid)
-    local phone = (sim.getIccid():sub(-10, -1) .. uid .. "\0"):toHex()
-    local pwd = (misc.getImei():sub(-7, -1) .. uid .. "\0"):toHex()
+    local phone = (misc.getImei():sub(-10, -1) .. uid .. "\0"):toHex()
+    local pwd = (misc.getMuid():sub(-8, -1) .. "\0"):toHex()
     local pid = (pid .. string.rep("\0", 11 - #pid)):toHex()
     local login = "74797065000000000000006e616d650000000000" .. phone .. pwd .. pid
     tcpTask(cid, pios, reg, convert, passon, upprot, dwprot, "TCP", "\0\0", timeout, host[1], host[2], uid, nil, nil, intervalTime, ssl, login:fromHex())
